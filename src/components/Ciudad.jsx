@@ -2,6 +2,7 @@ import {Box, TextField, Button} from '@mui/material'
 // importa useSnackbar
 import { enqueueSnackbar} from 'notistack';
 
+// eslint-disable-next-line react/prop-types
 function Ciudad({city, setCity}) {
     const handleNotification = () => {
         if(city === ""){
