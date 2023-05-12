@@ -1,46 +1,55 @@
-import {Box, TextField, Button} from '@mui/material'
+import { Box, TextField, Button } from "@mui/material";
 // importa useSnackbar
-import { enqueueSnackbar} from 'notistack';
+import { enqueueSnackbar } from "notistack";
+import FetchCities from "./FetchCities";
 
 // eslint-disable-next-line react/prop-types
-function Ciudad({city, setCity}) {
-    const handleNotification = () => {
-        if(city === ""){
-            enqueueSnackbar('Ingrese una ciudad', {variant: 'error'})
-        }else {
-            enqueueSnackbar(`Buscando el clima en ${city}`, {variant: 'success'})
-
-        }
-        handleSubmit()
+function Ciudad({ city, setCity }) {
+  const handleNotification = () => {
+    if (city === "") {
+      enqueueSnackbar("Ingrese una ciudad", { variant: "error" });
+    } else {
+      enqueueSnackbar(`Buscando el clima en ${city}`, { variant: "success" });
     }
+  };
 
-    const handleCityChange = (e) => {
-        setCity(e.target.value)
-    }
+  const handleCityChange = (e) => {
+    setCity(e.target.value);
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
 
-
-            
   return (
-<Box component="form" sx={{display:"grid", placeContent:"center"}}    onSubmit={handleSubmit}>
-    <TextField
-    id='ciudad'
-    label='Ciudad'
-    variant='outlined'
-    onChange={handleCityChange}
+    <>
+      <Box
+        component="form"
+        sx={{ display: "grid", placeContent: "center" }}
+        onSubmit={handleSubmit}>
+        <TextField
+          id="ciudad"
+          label="Ciudad"
+          variant="outlined"
+          onChange={handleCityChange}
+          value={city}
+          required
+          helperText="Ingrese una ciudad"
+          fullWidth
+        />
+        <Button
+          type="submit"
+          onClick={handleNotification}
+          variant="contained">
+          Buscar
+        </Button>
+      </Box>
 
-    value={city}
-    required
-    helperText='Ingrese una ciudad'
-    fullWidth
-
-    />
-    <Button type='submit' onClick={handleNotification} variant='contained'>Buscar</Button>
-</Box>
-  )
+      <Box>
+        <FetchCities city={city} />
+      </Box>
+    </>
+  );
 }
 
-export default Ciudad
+export default Ciudad;

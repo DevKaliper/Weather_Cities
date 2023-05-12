@@ -7,6 +7,7 @@ import Ciudad from "./components/Ciudad"
 
 
 
+
 function App() {
   const [city, setCity] = useState("Londres")
   
@@ -15,6 +16,7 @@ function App() {
     <Container sx={{display: "grid", alignItems:"center", justifyContent:"center"}}>
       <Tittle city={city}/>
       <Ciudad city={city} setCity={setCity}/>
+      
     </Container>
     </>
   )
