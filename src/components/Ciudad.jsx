@@ -1,10 +1,27 @@
 import { Box, TextField, Button } from "@mui/material";
 // importa useSnackbar
 import { enqueueSnackbar } from "notistack";
-import FetchCities from "./FetchCities";
+
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 // eslint-disable-next-line react/prop-types
 function Ciudad({ city, setCity }) {
+  const [loading, setLoading] = useState(false);
+
+  const onSubmited = () => {
+    fetch(
+      `http://api.weatherapi.com/v1/current.json?key=${
+        import.meta.env.VITE_API_KEY
+      }&q=${city}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setCity(data);
+        setLoading(false);
+      });
+  };
+
   const handleNotification = () => {
     if (city === "") {
       enqueueSnackbar("Ingrese una ciudad", { variant: "error" });
@@ -37,17 +54,16 @@ function Ciudad({ city, setCity }) {
           helperText="Ingrese una ciudad"
           fullWidth
         />
-        <Button
-          type="submit"
+        <LoadingButton
           onClick={handleNotification}
-          variant="contained">
-          Buscar
-        </Button>
+          loading={loading}
+          loadingIndicator="Buscando..."
+          variant="contained"
+          type="submit">
+          buscar
+        </LoadingButton>
       </Box>
 
-      <Box>
-        <FetchCities city={city} />
-      </Box>
     </>
   );
 }
