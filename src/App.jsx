@@ -9,7 +9,7 @@ import Ciudad from "./components/Ciudad"
 
 
 function App() {
-  const [city, setCity] = useState("Londres")
+  const [city, setCity] = useState("")
   
   return (
     <>

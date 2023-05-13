@@ -8,8 +8,20 @@ import { LoadingButton } from "@mui/lab";
 // eslint-disable-next-line react/prop-types
 function Ciudad({ city, setCity }) {
   const [loading, setLoading] = useState(false);
+  const [weather, setWeather] = useState({
+    temp: null,
+    condition: null,
+    city: null,
+    country: null,
+    icon: null,
+    conditionText: null,
+  });
 
-  const onSubmited = () => {
+
+
+  const onSubmited = (e) => {
+    e.preventDefault();
+    setLoading(true);
     fetch(
       `http://api.weatherapi.com/v1/current.json?key=${
         import.meta.env.VITE_API_KEY
@@ -17,7 +29,14 @@ function Ciudad({ city, setCity }) {
     )
       .then((res) => res.json())
       .then((data) => {
-        setCity(data);
+        setWeather({
+          temp: data.current.temp_c,
+          condition: data.current.condition.code,
+          city: data.location.name,
+          country: data.location.country,
+          icon: data.current.condition.icon,
+          conditionText: data.current.condition.text,
+        });
         setLoading(false);
       });
   };
@@ -34,16 +53,14 @@ function Ciudad({ city, setCity }) {
     setCity(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
+
 
   return (
     <>
       <Box
         component="form"
-        sx={{ display: "grid", placeContent: "center" }}
-        onSubmit={handleSubmit}>
+        sx={{ display: "grid", placeContent: "center", width: "100%"}}
+        onSubmit={onSubmited}>
         <TextField
           id="ciudad"
           label="Ciudad"
@@ -63,6 +80,21 @@ function Ciudad({ city, setCity }) {
           buscar
         </LoadingButton>
       </Box>
+      {weather.temp ? (
+        <Box
+          sx={{
+            display: "grid",
+            placeContent: "center",
+            width: "100%",
+            gap: "1rem",
+          }}>
+          <h2>{weather.city}</h2>
+          <h3>{weather.country}</h3>
+          <img src={weather.icon} alt="icono del clima" />
+          <h1>{weather.temp}°C</h1>
+          <h4>{weather.conditionText}</h4>
+        </Box>
+      ) : null}
 
     </>
   );
