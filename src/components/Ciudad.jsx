@@ -1,4 +1,4 @@
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 // importa useSnackbar
 import { enqueueSnackbar } from "notistack";
 
@@ -17,11 +17,16 @@ function Ciudad({ city, setCity }) {
     conditionText: null,
   });
 
-
+  const [error, setError] = useState({
+    error: false,
+    message: null,
+  });
 
   const onSubmited = (e) => {
     e.preventDefault();
     setLoading(true);
+    error.error = false;
+    error.message = null;
     fetch(
       `http://api.weatherapi.com/v1/current.json?key=${
         import.meta.env.VITE_API_KEY
@@ -37,29 +42,30 @@ function Ciudad({ city, setCity }) {
           icon: data.current.condition.icon,
           conditionText: data.current.condition.text,
         });
-        setLoading(false);
-      });
-  };
 
-  const handleNotification = () => {
-    if (city === "") {
-      enqueueSnackbar("Ingrese una ciudad", { variant: "error" });
-    } else {
-      enqueueSnackbar(`Buscando el clima en ${city}`, { variant: "success" });
-    }
+        enqueueSnackbar(`Este es el clima en ${city}`, { variant: "success" });
+        
+      })
+      .catch(() => {
+        setError({
+          error: true,
+          message: "no se encontro la ciudad",
+        });
+        enqueueSnackbar("No pude encontrar esa ciudad", { variant: "error" });
+      });
+
+    setLoading(false);
   };
 
   const handleCityChange = (e) => {
     setCity(e.target.value);
   };
 
-
-
   return (
     <>
       <Box
         component="form"
-        sx={{ display: "grid", placeContent: "center", width: "100%"}}
+        sx={{ display: "grid", placeContent: "center", width: "100%" }}
         onSubmit={onSubmited}>
         <TextField
           id="ciudad"
@@ -68,11 +74,11 @@ function Ciudad({ city, setCity }) {
           onChange={handleCityChange}
           value={city}
           required
-          helperText="Ingrese una ciudad"
+          error={error.error}
+          helperText={error.error ? error.message : "Ingrese una ciudad"}
           fullWidth
         />
         <LoadingButton
-          onClick={handleNotification}
           loading={loading}
           loadingIndicator="Buscando..."
           variant="contained"
@@ -82,20 +88,35 @@ function Ciudad({ city, setCity }) {
       </Box>
       {weather.temp ? (
         <Box
-          sx={{
-            display: "grid",
-            placeContent: "center",
-            width: "100%",
-            gap: "1rem",
-          }}>
-          <h2>{weather.city}</h2>
-          <h3>{weather.country}</h3>
-          <img src={weather.icon} alt="icono del clima" />
-          <h1>{weather.temp}°C</h1>
-          <h4>{weather.conditionText}</h4>
+        sx={{
+          mt: 2,
+          display: "grid",
+          gap: 2,
+          textAlign: "center",
+        }}
+        
+        
+        >
+          <Typography variant="h2" align="center">
+            {weather.city}, {weather.country}
+          </Typography>
+          <Typography variant="h4" align="center">
+            {weather.temp}°C
+          </Typography>
+          <Typography variant="h5" align="center">
+            {weather.conditionText}
+          </Typography>
+          <Box
+            component="img"
+            alt={weather.conditionText}
+            src={weather.icon}
+            sx={{ margin: "0 auto" }}
+          />
+ 
+
+          
         </Box>
       ) : null}
-
     </>
   );
 }
